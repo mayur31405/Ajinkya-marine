@@ -1,0 +1,72 @@
+@import "tailwindcss";
+
+/* ===== Custom Theme (Ajinkya Marine Design System) ===== */
+@theme {
+  /* Colors */
+  --color-navy: #0E2A47;
+  --color-navy-light: #163A5F;
+  --color-accent: #FFC72C;
+  --color-accent-dark: #E6B322;
+  --color-light-grey: #F4F6F8;
+  --color-medium-grey: #9CA3AF;
+  --color-dark-text: #1F2937;
+  --color-white: #FFFFFF;
+
+  /* Font Families */
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Inter', sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0px 4px 12px rgba(0,0,0,0.05);
+  --shadow-md: 0px 8px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0px 16px 40px rgba(0,0,0,0.12);
+
+  /* Border Radius */
+  --radius-btn: 8px;
+  --radius-card: 16px;
+}
+
+/* ===== Smooth scroll ===== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== Base body ===== */
+body {
+  font-family: var(--font-body);
+  color: var(--color-dark-text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== Headings ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ===== Focus ring global ===== */
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* ===== Custom scrollbar ===== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-light-grey);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-navy-light);
+  border-radius: 4px;
+}
+
+/* ===== Selection ===== */
+::selection {
+  background: var(--color-accent);
+  color: var(--color-navy);
+}
