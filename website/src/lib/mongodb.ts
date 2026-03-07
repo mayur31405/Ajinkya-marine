@@ -5,6 +5,11 @@ const uri = process.env.MONGODB_URI || "";
 let client: MongoClient | undefined;
 let clientPromise: Promise<MongoClient> | undefined;
 
+const options = {
+    serverSelectionTimeoutMS: 5000,
+    connectTimeoutMS: 5000,
+};
+
 function getClientPromise(): Promise<MongoClient> {
     if (clientPromise) return clientPromise;
 
@@ -15,12 +20,12 @@ function getClientPromise(): Promise<MongoClient> {
         };
 
         if (!globalWithMongo._mongoClientPromise) {
-            client = new MongoClient(uri);
+            client = new MongoClient(uri, options);
             globalWithMongo._mongoClientPromise = client.connect();
         }
         clientPromise = globalWithMongo._mongoClientPromise;
     } else {
-        client = new MongoClient(uri);
+        client = new MongoClient(uri, options);
         clientPromise = client.connect();
     }
 

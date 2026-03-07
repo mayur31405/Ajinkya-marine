@@ -139,15 +139,16 @@ export default function AdminDashboard() {
                         <p className="text-medium-grey text-sm">Ajinkya Marine Pvt. Ltd.</p>
                     </div>
 
-                    <form onSubmit={handleLogin} className="bg-[#122A45] rounded-2xl p-6 shadow-lg border border-white/5">
-                        <label className="block text-sm font-medium text-medium-grey mb-2">Password</label>
+                    <form onSubmit={handleLogin} className="glass-panel p-6 shadow-2xl">
+                        <label className="block text-sm font-medium text-white/70 mb-2">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="Enter admin password"
-                            className="w-full px-4 py-3 rounded-xl bg-[#0B1D33] border border-white/10 text-white placeholder-medium-grey/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                            className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all"
                             autoFocus
+                            autoComplete="off"
                         />
                         {loginError && (
                             <p className="text-red-400 text-sm mt-2">{loginError}</p>
@@ -170,7 +171,7 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen">
             {/* Top Bar */}
-            <header className="bg-[#122A45] border-b border-white/5 sticky top-0 z-50">
+            <header className="bg-white/5 backdrop-blur-3xl border-b border-white/10 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
@@ -198,44 +199,44 @@ export default function AdminDashboard() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
                 {/* Stats Bar */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-                    <div className="bg-[#122A45] rounded-xl p-4 border border-white/5">
-                        <p className="text-medium-grey text-xs uppercase tracking-wider">Total Contacts</p>
+                    <div className="glass-panel p-5">
+                        <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">Total Contacts</p>
                         <p className="text-2xl font-bold text-white mt-1">{contacts.length || "—"}</p>
                     </div>
-                    <div className="bg-[#122A45] rounded-xl p-4 border border-white/5">
-                        <p className="text-medium-grey text-xs uppercase tracking-wider">Unread</p>
-                        <p className="text-2xl font-bold text-accent mt-1">
+                    <div className="glass-panel p-5">
+                        <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">Unread</p>
+                        <p className="text-2xl font-bold text-accent mt-1 drop-shadow-[0_0_8px_rgba(255,199,44,0.4)]">
                             {contacts.filter((c) => !c.read).length || "—"}
                         </p>
                     </div>
-                    <div className="bg-[#122A45] rounded-xl p-4 border border-white/5">
-                        <p className="text-medium-grey text-xs uppercase tracking-wider">Total RFQs</p>
+                    <div className="glass-panel p-5">
+                        <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">Total RFQs</p>
                         <p className="text-2xl font-bold text-white mt-1">{rfqs.length || "—"}</p>
                     </div>
-                    <div className="bg-[#122A45] rounded-xl p-4 border border-white/5">
-                        <p className="text-medium-grey text-xs uppercase tracking-wider">New RFQs</p>
-                        <p className="text-2xl font-bold text-green-400 mt-1">
+                    <div className="glass-panel p-5">
+                        <p className="text-white/50 text-xs uppercase tracking-wider font-semibold">New RFQs</p>
+                        <p className="text-2xl font-bold text-green-400 mt-1 drop-shadow-[0_0_8px_rgba(74,222,128,0.4)]">
                             {rfqs.filter((r) => r.status === "NEW").length || "—"}
                         </p>
                     </div>
                 </div>
 
                 {/* Tab Switcher */}
-                <div className="flex gap-1 bg-[#122A45] rounded-xl p-1 mb-6 border border-white/5 w-fit">
+                <div className="flex gap-1 glass-panel p-1.5 mb-6 w-fit">
                     <button
                         onClick={() => setActiveTab("contact")}
-                        className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${activeTab === "contact"
-                                ? "bg-accent text-navy"
-                                : "text-medium-grey hover:text-white"
+                        className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "contact"
+                            ? "bg-white/10 text-white shadow-sm border-white/20"
+                            : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
                             }`}
                     >
                         📧 Contact Submissions
                     </button>
                     <button
                         onClick={() => setActiveTab("rfq")}
-                        className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer ${activeTab === "rfq"
-                                ? "bg-accent text-navy"
-                                : "text-medium-grey hover:text-white"
+                        className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "rfq"
+                            ? "bg-white/10 text-white shadow-sm border-white/20"
+                            : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
                             }`}
                     >
                         📋 RFQ Submissions
@@ -259,24 +260,24 @@ export default function AdminDashboard() {
                                 <p className="text-medium-grey/50 text-sm mt-1">They will appear here when customers submit the contact form</p>
                             </div>
                         ) : (
-                            <div className="bg-[#122A45] rounded-2xl border border-white/5 overflow-hidden">
+                            <div className="glass-panel overflow-hidden p-0">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead>
-                                            <tr className="border-b border-white/5">
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Status</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Name</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Email</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden md:table-cell">Company</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden lg:table-cell">Date</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Action</th>
+                                            <tr className="border-b border-white/10 bg-white/5">
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Status</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Name</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden sm:table-cell">Email</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden md:table-cell">Company</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden lg:table-cell">Date</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {contacts.map((c) => (
                                                 <tr
                                                     key={c._id}
-                                                    className={`border-b border-white/5 hover:bg-white/[0.02] transition-colors ${!c.read ? "bg-accent/[0.03]" : ""}`}
+                                                    className={`border-b border-white/10 hover:bg-white/5 transition-colors ${!c.read ? "bg-accent/5 backdrop-blur-sm" : ""}`}
                                                 >
                                                     <td className="px-4 py-3">
                                                         <span className={`inline-block w-2 h-2 rounded-full ${c.read ? "bg-medium-grey" : "bg-accent"}`} />
@@ -304,7 +305,7 @@ export default function AdminDashboard() {
                         {/* Contact Detail Modal */}
                         {selectedContact && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedContact(null)}>
-                                <div className="bg-[#122A45] rounded-2xl max-w-lg w-full p-6 border border-white/10 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                                <div className="glass-panel max-w-lg w-full p-8 shadow-2xl backdrop-blur-3xl border-white/20" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-white font-semibold text-lg">Contact Details</h3>
                                         <button onClick={() => setSelectedContact(null)} className="text-medium-grey hover:text-white cursor-pointer">✕</button>
@@ -314,7 +315,7 @@ export default function AdminDashboard() {
                                         <div><span className="text-medium-grey text-xs uppercase tracking-wider">Email</span><p className="text-accent">{selectedContact.email}</p></div>
                                         <div><span className="text-medium-grey text-xs uppercase tracking-wider">Phone</span><p className="text-white">{selectedContact.phone || "—"}</p></div>
                                         <div><span className="text-medium-grey text-xs uppercase tracking-wider">Company</span><p className="text-white">{selectedContact.company || "—"}</p></div>
-                                        <div><span className="text-medium-grey text-xs uppercase tracking-wider">Message</span><p className="text-white whitespace-pre-wrap bg-[#0B1D33] rounded-xl p-3 mt-1">{selectedContact.message}</p></div>
+                                        <div><span className="text-medium-grey text-xs uppercase tracking-wider">Message</span><p className="text-white whitespace-pre-wrap bg-white/5 border border-white/10 rounded-xl p-4 mt-2 text-sm max-h-48 overflow-y-auto font-light leading-relaxed">{selectedContact.message}</p></div>
                                         <div><span className="text-medium-grey text-xs uppercase tracking-wider">Received</span><p className="text-white">{formatDate(selectedContact.createdAt)}</p></div>
                                     </div>
                                     <div className="mt-6 flex gap-3">
@@ -348,27 +349,27 @@ export default function AdminDashboard() {
                                 <p className="text-medium-grey/50 text-sm mt-1">They will appear here when customers submit the RFQ form</p>
                             </div>
                         ) : (
-                            <div className="bg-[#122A45] rounded-2xl border border-white/5 overflow-hidden">
+                            <div className="glass-panel overflow-hidden p-0">
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead>
-                                            <tr className="border-b border-white/5">
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Status</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Company</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden sm:table-cell">Contact</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden md:table-cell">Products</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider hidden lg:table-cell">Date</th>
-                                                <th className="text-left px-4 py-3 text-medium-grey font-medium text-xs uppercase tracking-wider">Action</th>
+                                            <tr className="border-b border-white/10 bg-white/5">
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Status</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Company</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden sm:table-cell">Contact</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden md:table-cell">Products</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider hidden lg:table-cell">Date</th>
+                                                <th className="text-left px-4 py-4 text-white/50 font-semibold text-xs uppercase tracking-wider">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {rfqs.map((r) => (
-                                                <tr key={r._id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                                                <tr key={r._id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
                                                     <td className="px-4 py-3">
                                                         <span className={`inline-block px-2 py-0.5 text-[11px] font-semibold rounded-full ${r.status === "NEW" ? "bg-green-400/10 text-green-400" :
-                                                                r.status === "REVIEWED" ? "bg-blue-400/10 text-blue-400" :
-                                                                    r.status === "QUOTED" ? "bg-purple-400/10 text-purple-400" :
-                                                                        "bg-medium-grey/10 text-medium-grey"
+                                                            r.status === "REVIEWED" ? "bg-blue-400/10 text-blue-400" :
+                                                                r.status === "QUOTED" ? "bg-purple-400/10 text-purple-400" :
+                                                                    "bg-medium-grey/10 text-medium-grey"
                                                             }`}>
                                                             {r.status}
                                                         </span>
@@ -401,7 +402,7 @@ export default function AdminDashboard() {
                         {/* RFQ Detail Modal */}
                         {selectedRFQ && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedRFQ(null)}>
-                                <div className="bg-[#122A45] rounded-2xl max-w-lg w-full p-6 border border-white/10 shadow-2xl max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                                <div className="glass-panel max-w-lg w-full p-8 shadow-2xl backdrop-blur-3xl border-white/20 max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-white font-semibold text-lg">RFQ Details</h3>
                                         <button onClick={() => setSelectedRFQ(null)} className="text-medium-grey hover:text-white cursor-pointer">✕</button>
@@ -425,10 +426,28 @@ export default function AdminDashboard() {
                                             <div><span className="text-medium-grey text-xs uppercase tracking-wider">Delivery To</span><p className="text-white">{selectedRFQ.deliveryLocation}</p></div>
                                         </div>
                                         {selectedRFQ.message && (
-                                            <div><span className="text-medium-grey text-xs uppercase tracking-wider">Message</span><p className="text-white whitespace-pre-wrap bg-[#0B1D33] rounded-xl p-3 mt-1">{selectedRFQ.message}</p></div>
+                                            <div><span className="text-medium-grey text-xs uppercase tracking-wider">Message</span><p className="text-white whitespace-pre-wrap bg-white/5 border border-white/10 rounded-xl p-4 mt-2 text-sm font-light leading-relaxed">{selectedRFQ.message}</p></div>
                                         )}
                                         {selectedRFQ.fileName && (
-                                            <div><span className="text-medium-grey text-xs uppercase tracking-wider">Attached File</span><p className="text-accent text-sm">📎 {selectedRFQ.fileName}</p></div>
+                                            <div>
+                                                <span className="text-medium-grey text-xs uppercase tracking-wider">Attached File</span>
+                                                <button
+                                                    onClick={async () => {
+                                                        try {
+                                                            const res = await fetch(`/api/admin/files?name=${encodeURIComponent(selectedRFQ.fileName!)}`, {
+                                                                headers: { Authorization: `Bearer ${password}` },
+                                                            });
+                                                            if (!res.ok) { alert("Failed to download file."); return; }
+                                                            const blob = await res.blob();
+                                                            const url = URL.createObjectURL(blob);
+                                                            window.open(url, "_blank");
+                                                        } catch { alert("Error downloading file."); }
+                                                    }}
+                                                    className="mt-1 flex items-center gap-2 text-accent hover:text-accent-dark text-sm font-medium cursor-pointer hover:underline transition-colors"
+                                                >
+                                                    📎 {selectedRFQ.fileName} — View / Download ↗
+                                                </button>
+                                            </div>
                                         )}
                                         <div><span className="text-medium-grey text-xs uppercase tracking-wider">Received</span><p className="text-white">{formatDate(selectedRFQ.createdAt)}</p></div>
                                     </div>
@@ -442,8 +461,8 @@ export default function AdminDashboard() {
                                                     key={s}
                                                     onClick={() => { handleUpdateRFQStatus(selectedRFQ._id, s); setSelectedRFQ({ ...selectedRFQ, status: s }); }}
                                                     className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${selectedRFQ.status === s
-                                                            ? "bg-accent text-navy"
-                                                            : "border border-white/10 text-medium-grey hover:text-white hover:bg-white/5"
+                                                        ? "bg-accent text-navy"
+                                                        : "border border-white/10 text-medium-grey hover:text-white hover:bg-white/5"
                                                         }`}
                                                 >
                                                     {s}

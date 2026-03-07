@@ -24,6 +24,9 @@ npm-debug.log*
 # Uploads (user-submitted files)
 uploads/
 
+# Local data fallback (JSON submissions)
+data/
+
 # SQLite (legacy)
 *.db
 

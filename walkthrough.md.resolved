@@ -1,0 +1,45 @@
+# Security Hardening — Walkthrough
+
+## What Was Done
+
+### 🛡️ 7 Files Changed / Created
+
+| # | File | What It Does |
+|---|---|---|
+| 1 | [middleware.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/middleware.ts) | **NEW** — Rate limiting (5 req/min forms, 10 login), brute-force lockout (5 fails → 15 min lock), security headers on every response |
+| 2 | [sanitize.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/lib/sanitize.ts) | **NEW** — HTML escaping, input trimming/length limits, email/phone validation |
+| 3 | [contact/route.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/app/api/contact/route.ts) | Sanitized inputs, enforced length limits, server-side email validation |
+| 4 | [rfq/route.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/app/api/rfq/route.ts) | File size (10MB) + type validation, sanitized all fields |
+| 5 | [login/route.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/app/api/admin/login/route.ts) | Brute-force lockout, removed hardcoded password, generic error messages |
+| 6 | [next.config.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/next.config.ts) | Security headers fallback layer |
+| 7 | [email.ts](file:///c:/Users/ADMIN/Desktop/Ajinkya_Marine/website/src/lib/email.ts) | HTML-escaped all user data in email templates (XSS prevention) |
+
+---
+
+### Security Layers Summary
+
+```mermaid
+graph TD
+    A["Incoming Request"] --> B["Middleware Layer"]
+    B --> |"Rate Limit Check"| C{"Under Limit?"}
+    C --> |"No"| D["429 Too Many Requests"]
+    C --> |"Yes"| E{"Login Route?"}
+    E --> |"Yes"| F{"IP Locked Out?"}
+    F --> |"Yes"| D
+    F --> |"No"| G["API Route Handler"]
+    E --> |"No"| G
+    G --> H["Input Sanitization"]
+    H --> I["Validation"]
+    I --> J["MongoDB / File System"]
+    G --> K["Security Headers Added"]
+```
+
+## Verification
+
+Admin dashboard, login, RFQ, and contact pages all verified working:
+
+````carousel
+![Admin dashboard with RFQ data](C:/Users/ADMIN/.gemini/antigravity/brain/c189e780-7d39-4737-aac8-f130941c06bc/admin_rfq_submissions_1772650271851.png)
+<!-- slide -->
+![Contact page working normally](C:/Users/ADMIN/.gemini/antigravity/brain/c189e780-7d39-4737-aac8-f130941c06bc/contact_page_verified_1772650282865.png)
+````

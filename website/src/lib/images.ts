@@ -5,11 +5,10 @@
  */
 
 export const images = {
-    // ===== Hero & Background =====
     hero: {
         // Cargo ship (verified working)
         cargoShip:
-            "https://images.unsplash.com/photo-1488998527040-85054a85150e?w=1920&q=80",
+            "https://images.unsplash.com/photo-1524522173746-f628baad3644?w=1920&q=80",
         // Busy port (verified working)
         port: "https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1920&q=80",
     },

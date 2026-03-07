@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 import SectionTitle from "@/components/SectionTitle";
 import { images } from "@/lib/images";
 import {
@@ -16,7 +17,6 @@ import {
     Globe,
     ArrowRight,
     CheckCircle2,
-    Anchor,
     Ship,
 } from "lucide-react";
 
@@ -100,7 +100,6 @@ const reasons = [
     },
 ];
 
-
 /* ===== Stats ===== */
 const stats = [
     { value: "50+", label: "Products" },
@@ -110,413 +109,363 @@ const stats = [
 ];
 
 export default function HomePage() {
+    const heroRef = useRef<HTMLElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: heroRef,
+        offset: ["start start", "end start"],
+    });
+
+    const yBackground = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+
     return (
-        <>
-            {/* ===================== HERO WITH CARGO SHIP BACKGROUND ===================== */}
-            <section className="relative min-h-[90vh] flex items-center overflow-hidden">
-                {/* Background Image */}
-                <div className="absolute inset-0">
-                    <Image
-                        src={images.hero.cargoShip}
-                        alt="Cargo ship at sea"
-                        fill
-                        className="object-cover"
-                        priority
-                        quality={90}
-                    />
-                    {/* Dark overlay for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-navy/95 via-navy/80 to-navy/40" />
-                    {/* Bottom gradient for smooth transition */}
-                    <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-navy/90 to-transparent" />
-                </div>
+        <div className="relative w-full bg-[#030914] text-white">
+            {/* Global Ambient Background — Ocean Liquid Gradient */}
+            <div className="fixed inset-0 z-0 pointer-events-none ocean-gradient-bg">
+                <div className="bg-blob bg-blob-1" />
+                <div className="bg-blob bg-blob-2" />
+            </div>
 
-                {/* Content */}
-                <div className="relative mx-auto max-w-[1320px] px-6 lg:px-20 py-24 lg:py-32 w-full">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* Text Column */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -40 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                        >
-                            <span className="inline-flex items-center gap-2 rounded-full bg-accent/15 backdrop-blur-sm border border-accent/30 px-4 py-1.5 text-xs font-semibold text-accent uppercase tracking-wider mb-6">
-                                <Ship className="h-3.5 w-3.5" />
-                                Est. 2019 — Mumbai, India
-                            </span>
-                            <h1 className="font-heading text-4xl md:text-5xl lg:text-[64px] font-extrabold text-white leading-[1.08] uppercase">
-                                Industrial &amp;{" "}
-                                <span className="text-accent">Food-Grade</span>{" "}
-                                <br className="hidden md:block" />
-                                Marine Chemicals
-                            </h1>
-                            <p className="mt-6 text-lg lg:text-xl text-white/80 leading-relaxed max-w-xl">
-                                Ajinkya Marine Pvt. Ltd. is a trusted importer &amp; exporter of
-                                premium seafood additives, food enzymes, egg products, and
-                                industrial chemicals — serving B2B clients worldwide with
-                                HACCP, ISO &amp; FSSAI certified quality.
-                            </p>
-                            <div className="mt-8 flex flex-wrap gap-4">
-                                <Link
-                                    href="/products"
-                                    className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-accent px-7 py-4 font-heading text-sm font-bold text-navy transition-all hover:bg-accent-dark hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
-                                >
-                                    Explore Products
-                                    <ArrowRight className="h-4 w-4" />
-                                </Link>
-                                <Link
-                                    href="/rfq"
-                                    className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] border-2 border-white/40 backdrop-blur-sm px-7 py-4 font-heading text-sm font-bold text-white transition-all hover:border-accent hover:text-accent hover:bg-white/5"
-                                >
-                                    Request a Quote
-                                </Link>
-                            </div>
-
-                            {/* Stats row */}
-                            <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-6">
-                                {stats.map((stat) => (
-                                    <div key={stat.label}>
-                                        <p className="font-heading text-3xl font-extrabold text-accent">
-                                            {stat.value}
-                                        </p>
-                                        <p className="text-xs text-white/60 uppercase tracking-wider mt-1">
-                                            {stat.label}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-
-                        {/* Floating elements on desktop */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 40 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-                            className="hidden lg:flex flex-col items-end gap-4"
-                        >
-                            {/* Certification Card */}
-                            <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-lg">
-                                <div className="flex items-center gap-3">
-                                    <ShieldCheck className="h-10 w-10 text-accent" />
-                                    <div>
-                                        <p className="text-sm font-bold text-white">
-                                            Quality Certified
-                                        </p>
-                                        <p className="text-xs text-white/60">
-                                            HACCP · ISO 9001 · FSSAI
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Global Reach Card */}
-                            <div className="rounded-xl bg-white/10 backdrop-blur-md border border-white/20 p-5 shadow-lg">
-                                <div className="flex items-center gap-3">
-                                    <Globe className="h-10 w-10 text-accent" />
-                                    <div>
-                                        <p className="text-sm font-bold text-white">
-                                            Global Trade Network
-                                        </p>
-                                        <p className="text-xs text-white/60">
-                                            Import & Export · 20+ Countries
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== IMAGE STRIP - WHAT WE DO ===================== */}
-            <section className="py-4 bg-accent">
-                <div className="mx-auto max-w-[1320px] px-6 lg:px-20">
-                    <div className="flex flex-wrap items-center justify-center gap-8 text-navy">
-                        {[
-                            { icon: Fish, text: "Seafood Processing" },
-                            { icon: FlaskConical, text: "Food Additives" },
-                            { icon: Egg, text: "Egg Products" },
-                            { icon: Sparkles, text: "Food Enzymes" },
-                            { icon: Truck, text: "Global Logistics" },
-                            { icon: ShieldCheck, text: "Quality Certified" },
-                        ].map((item) => (
-                            <div key={item.text} className="flex items-center gap-2">
-                                <item.icon className="h-5 w-5" />
-                                <span className="text-sm font-bold uppercase tracking-wider">
-                                    {item.text}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== PRODUCT CATEGORIES WITH IMAGES ===================== */}
-            <section className="py-20 lg:py-[100px] bg-light-grey">
-                <div className="mx-auto max-w-[1320px] px-6 lg:px-20">
-                    <SectionTitle
-                        title="Our Product Range"
-                        subtitle="We supply a comprehensive range of food-grade and industrial chemicals for seafood processing, food manufacturing, and more."
-                    />
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                        {categoryCards.map((card, i) => (
-                            <motion.div
-                                key={card.title}
-                                custom={i}
-                                initial="hidden"
-                                whileInView="visible"
-                                viewport={{ once: true, margin: "-40px" }}
-                                variants={fadeUp}
-                            >
-                                <Link
-                                    href={card.href}
-                                    className="group block rounded-[var(--radius-card)] bg-white overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-                                >
-                                    {/* Category Image */}
-                                    <div className="relative h-48 overflow-hidden">
-                                        <Image
-                                            src={card.image}
-                                            alt={card.title}
-                                            fill
-                                            className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-navy/60 to-transparent" />
-                                        <div className="absolute bottom-4 left-4 inline-flex items-center justify-center rounded-lg bg-accent p-2">
-                                            <card.icon className="h-5 w-5 text-navy" />
-                                        </div>
-                                    </div>
-
-                                    <div className="p-6">
-                                        <h3 className="font-heading text-xl font-bold text-dark-text mb-2">
-                                            {card.title}
-                                        </h3>
-                                        <p className="text-sm text-medium-grey leading-relaxed">
-                                            {card.desc}
-                                        </p>
-                                        <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-navy group-hover:text-accent transition-colors">
-                                            View Products
-                                            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                                        </span>
-                                    </div>
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== FULL-WIDTH IMAGE SECTION ===================== */}
-            <section className="relative h-[400px] overflow-hidden">
-                <Image
-                    src={images.atmosphere.globalTrade}
-                    alt="Global shipping and trade"
-                    fill
-                    className="object-cover"
-                />
-                <div className="absolute inset-0 bg-navy/70" />
-                <div className="relative h-full flex items-center justify-center text-center px-6">
+            <main className="relative z-10 w-full overflow-hidden">
+                {/* ===================== HERO SECTION ===================== */}
+                <section ref={heroRef} className="relative min-h-screen flex items-center pt-24 pb-12">
+                    {/* Background image constrained to hero with parallax and fading */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
+                        className="absolute inset-0 z-0 opacity-40 mix-blend-overlay"
+                        style={{ y: yBackground }}
                     >
-                        <h2 className="font-heading text-3xl md:text-5xl font-extrabold text-white uppercase">
-                            Connecting India to the{" "}
-                            <span className="text-accent">World</span>
-                        </h2>
-                        <p className="mt-4 text-white/70 text-lg max-w-2xl mx-auto">
-                            From sourcing premium chemicals globally to delivering them at
-                            your doorstep — we bridge the gap between suppliers and
-                            manufacturers.
-                        </p>
+                        <Image
+                            src={images.hero.cargoShip}
+                            alt="Cargo ship at sea"
+                            fill
+                            className="object-cover"
+                            priority
+                            quality={100}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#030914]/50 to-[#030914]" />
                     </motion.div>
-                </div>
-            </section>
 
-            {/* ===================== WHY CHOOSE US ===================== */}
-            <section className="py-20 lg:py-[100px]">
-                <div className="mx-auto max-w-[1320px] px-6 lg:px-20">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-                        {/* Image Side */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6 }}
-                            className="relative"
-                        >
-                            <div className="relative aspect-[4/3] rounded-[var(--radius-card)] overflow-hidden shadow-lg">
-                                <Image
-                                    src={images.about.warehouse}
-                                    alt="Our warehouse and operations"
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                            {/* Floating accent box */}
-                            <div className="absolute -bottom-6 -right-6 rounded-[var(--radius-card)] bg-accent p-6 shadow-lg hidden md:block">
-                                <p className="font-heading text-4xl font-extrabold text-navy">
-                                    6+
-                                </p>
-                                <p className="text-sm font-bold text-navy/70">
-                                    Years of Excellence
-                                </p>
-                            </div>
-                        </motion.div>
-
-                        {/* Content Side */}
-                        <motion.div
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6, delay: 0.2 }}
-                        >
-                            <h2 className="font-heading text-3xl md:text-4xl font-bold text-dark-text mb-8">
-                                Why Choose{" "}
-                                <span className="text-accent">Ajinkya Marine?</span>
-                            </h2>
-                            <div className="space-y-6">
-                                {reasons.map((reason, i) => (
-                                    <div key={reason.title} className="flex gap-4">
-                                        <div className="shrink-0 flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10">
-                                            <reason.icon className="h-6 w-6 text-accent" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-heading text-lg font-bold text-dark-text">
-                                                {reason.title}
-                                            </h3>
-                                            <p className="text-sm text-medium-grey leading-relaxed mt-1">
-                                                {reason.desc}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ===================== CERTIFICATIONS WITH IMAGES ===================== */}
-            <section className="relative py-20 overflow-hidden">
-                <div className="absolute inset-0">
-                    <Image
-                        src={images.about.qualityControl}
-                        alt="Quality control laboratory"
-                        fill
-                        className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-navy/90" />
-                </div>
-                <div className="relative mx-auto max-w-[1320px] px-6 lg:px-20">
-                    <div className="text-center mb-10">
-                        <h2 className="font-heading text-2xl md:text-3xl font-bold text-white">
-                            Trusted Quality,{" "}
-                            <span className="text-accent">Global Standards</span>
-                        </h2>
-                        <p className="mt-2 text-white/60 text-sm max-w-md mx-auto">
-                            Our products and processes comply with internationally
-                            recognized safety and quality standards.
-                        </p>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
-                        {[
-                            { name: "HACCP", full: "Hazard Analysis Critical Control Points", image: images.certifications.haccp },
-                            { name: "ISO 9001", full: "Quality Management System", image: images.certifications.iso9001 },
-                            { name: "FSSAI", full: "Food Safety Standards Authority", image: images.certifications.fssai },
-                            { name: "MSME", full: "Ministry of MSME Registered", image: images.certifications.msme },
-                        ].map((cert) => (
+                    <div className="relative z-10 mx-auto max-w-[1320px] px-6 lg:px-20 w-full">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                            {/* Text Content */}
                             <motion.div
-                                key={cert.name}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5 }}
-                                className="rounded-[var(--radius-card)] overflow-hidden border border-white/10 bg-white/5 backdrop-blur-sm group"
+                                className="lg:col-span-7"
+                                initial={{ opacity: 0, x: -40 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
                             >
-                                <div className="relative h-32 overflow-hidden">
-                                    <Image
-                                        src={cert.image}
-                                        alt={cert.name}
-                                        fill
-                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-navy/40" />
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <CheckCircle2 className="h-10 w-10 text-accent drop-shadow-lg" />
+                                <span className="inline-flex items-center gap-2 rounded-full glass-panel px-4 py-1.5 text-xs font-semibold text-accent uppercase tracking-wider mb-6 backdrop-blur-3xl shadow-none">
+                                    <Ship className="h-3.5 w-3.5" />
+                                    Est. 2019 — Mumbai, India
+                                </span>
+
+                                <h1 className="font-heading text-5xl sm:text-6xl lg:text-[72px] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-white to-white/70 leading-[1.1] uppercase drop-shadow-sm">
+                                    Industrial &amp; <br className="hidden sm:block" />
+                                    <span className="text-accent drop-shadow-[0_0_15px_rgba(255,199,44,0.3)]">Food-Grade</span> <br />
+                                    Chemicals
+                                </h1>
+
+                                <p className="mt-8 text-lg lg:text-xl text-white/80 leading-relaxed max-w-xl font-light">
+                                    Trusted global suppliers of premium seafood additives, food enzymes, and industrial chemicals — certified for safety, delivered with ocean-scale reliability.
+                                </p>
+
+                                <div className="mt-10 flex flex-wrap gap-4">
+                                    <Link
+                                        href="/products"
+                                        className="group relative inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-accent/90 hover:bg-accent px-8 py-4 font-heading text-sm font-bold text-navy transition-all overflow-hidden shadow-[0_0_20px_rgba(255,199,44,0.3)] hover:shadow-[0_0_30px_rgba(255,199,44,0.5)]"
+                                    >
+                                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] group-hover:animate-[glass-shimmer_1.5s_linear]" />
+                                        Explore Products
+                                        <ArrowRight className="h-4 w-4 relative z-10 transition-transform group-hover:translate-x-1" />
+                                    </Link>
+                                    <Link
+                                        href="/rfq"
+                                        className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] glass-panel px-8 py-4 font-heading text-sm font-bold text-white transition-all hover:bg-white/10 hover:border-white/40 group"
+                                    >
+                                        Request a Quote
+                                    </Link>
+                                </div>
+                            </motion.div>
+
+                            {/* Hero Right - Glass Panels */}
+                            <motion.div
+                                className="lg:col-span-5 grid grid-cols-2 gap-4 lg:gap-6 relative"
+                                initial={{ opacity: 0, y: 40 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 1, ease: "easeOut", delay: 0.2 }}
+                            >
+                                <div className="col-span-2 glass-panel p-6 sm:p-8 animate-float">
+                                    <div className="grid grid-cols-2 gap-6 sm:gap-8">
+                                        {stats.map((stat, idx) => (
+                                            <div key={stat.label} className={idx % 2 !== 0 ? "pl-6 sm:pl-8 border-l border-white/10" : ""}>
+                                                <p className="font-heading text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent-dark">
+                                                    {stat.value}
+                                                </p>
+                                                <p className="text-xs text-white/60 uppercase tracking-widest mt-2">
+                                                    {stat.label}
+                                                </p>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-                                <div className="p-4 text-center">
-                                    <h3 className="font-heading text-base font-bold text-accent">
-                                        {cert.name}
-                                    </h3>
-                                    <p className="text-[11px] text-white/50 mt-1 leading-tight">
-                                        {cert.full}
+
+                                <div className="col-span-1 glass-panel p-5 sm:p-6 group animate-float-delayed">
+                                    <ShieldCheck className="h-10 w-10 text-accent mb-4 group-hover:scale-110 transition-transform duration-500" />
+                                    <p className="text-sm font-bold text-white uppercase tracking-wider mb-1">
+                                        Certified
+                                    </p>
+                                    <p className="text-xs text-white/50">
+                                        HACCP, ISO 9001
+                                    </p>
+                                </div>
+
+                                <div className="col-span-1 glass-panel p-5 sm:p-6 group animate-float" style={{ animationDelay: "1s" }}>
+                                    <Globe className="h-10 w-10 text-accent mb-4 group-hover:scale-110 transition-transform duration-500" />
+                                    <p className="text-sm font-bold text-white uppercase tracking-wider mb-1">
+                                        Global
+                                    </p>
+                                    <p className="text-xs text-white/50">
+                                        Import & Export
                                     </p>
                                 </div>
                             </motion.div>
-                        ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* ===================== IMAGE GALLERY STRIP ===================== */}
-            <section className="py-2 bg-white">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {[
-                        { src: images.atmosphere.containerYard, alt: "Container yard" },
-                        { src: images.atmosphere.seafood, alt: "Seafood processing" },
-                        { src: images.atmosphere.laboratory, alt: "Quality testing" },
-                        { src: images.atmosphere.factory, alt: "Manufacturing facility" },
-                    ].map((img) => (
-                        <div key={img.alt} className="relative h-48 md:h-56 overflow-hidden">
-                            <Image
-                                src={img.src}
-                                alt={img.alt}
-                                fill
-                                className="object-cover hover:scale-105 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-navy/20 hover:bg-navy/0 transition-colors duration-300" />
+                {/* ===================== MARINE CAPABILITIES STRIP ===================== */}
+                <section className="py-6 px-4">
+                    <div className="mx-auto max-w-[1320px]">
+                        <div className="glass-panel py-6 px-4 sm:px-10 rounded-full flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+                            {[
+                                { icon: Fish, text: "Seafood Processing" },
+                                { icon: FlaskConical, text: "Food Additives" },
+                                { icon: Egg, text: "Egg Products" },
+                                { icon: Sparkles, text: "Food Enzymes" },
+                                { icon: Truck, text: "Global Logistics" },
+                            ].map((item) => (
+                                <div key={item.text} className="flex items-center gap-2 group cursor-default">
+                                    <item.icon className="h-5 w-5 text-accent group-hover:rotate-12 transition-transform duration-300" />
+                                    <span className="text-sm font-bold uppercase tracking-wider text-white/80 group-hover:text-white transition-colors">
+                                        {item.text}
+                                    </span>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-            </section>
+                    </div>
+                </section>
 
-            {/* ===================== CTA ===================== */}
-            <section className="py-20 lg:py-[100px] bg-light-grey">
-                <div className="mx-auto max-w-[1320px] px-6 lg:px-20 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <h2 className="font-heading text-3xl md:text-4xl font-bold text-dark-text">
-                            Ready to Get Started?
-                        </h2>
-                        <p className="mt-4 text-medium-grey text-lg max-w-xl mx-auto">
-                            Whether you need bulk chemicals, food additives, or custom
-                            formulations — we&apos;re here to help. Request a quote today.
-                        </p>
-                        <div className="mt-8 flex flex-wrap justify-center gap-4">
-                            <Link
-                                href="/rfq"
-                                className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] bg-accent px-8 py-4 font-heading text-sm font-bold text-navy transition-all hover:bg-accent-dark hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
-                            >
-                                Request a Quote
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] border-2 border-navy/20 px-8 py-4 font-heading text-sm font-bold text-navy transition-all hover:border-navy hover:bg-navy hover:text-white"
-                            >
-                                Contact Us
-                            </Link>
+                {/* ===================== PRODUCT CATEGORIES ===================== */}
+                <section className="py-24 lg:py-32 relative">
+                    <div className="mx-auto max-w-[1320px] px-6 lg:px-20 relative z-10">
+                        <SectionTitle
+                            title="Refined Product Solutions"
+                            subtitle="Explore our comprehensive range of high-performance food-grade and industrial chemicals."
+                            light={true}
+                        />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mt-16">
+                            {categoryCards.map((card, i) => (
+                                <motion.div
+                                    key={card.title}
+                                    custom={i}
+                                    initial="hidden"
+                                    whileInView="visible"
+                                    viewport={{ once: true, margin: "-40px" }}
+                                    variants={fadeUp}
+                                >
+                                    <Link
+                                        href={card.href}
+                                        className="group block glass-panel h-full flex flex-col transition-all duration-500 hover:-translate-y-2 hover:border-white/40"
+                                    >
+                                        <div className="relative h-56 w-full overflow-hidden rounded-t-[calc(var(--radius-card)-1px)]">
+                                            <Image
+                                                src={card.image}
+                                                alt={card.title}
+                                                fill
+                                                className="object-cover transition-all duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-ocean-dark)] to-transparent opacity-90" />
+
+                                            {/* Top left Icon Badge */}
+                                            <div className="absolute top-4 left-4 glass-panel rounded-xl p-3 border-none bg-white/10">
+                                                <card.icon className="h-6 w-6 text-accent" />
+                                            </div>
+                                        </div>
+
+                                        <div className="p-8 flex flex-col flex-grow relative z-10">
+                                            <h3 className="font-heading text-xl font-bold text-white mb-3">
+                                                {card.title}
+                                            </h3>
+                                            <p className="text-sm text-white/60 leading-relaxed font-light mb-6 flex-grow">
+                                                {card.desc}
+                                            </p>
+                                            <span className="inline-flex items-center gap-2 text-sm font-semibold text-accent mt-auto group-hover:text-white transition-colors">
+                                                Explore
+                                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                            </span>
+                                        </div>
+                                    </Link>
+                                </motion.div>
+                            ))}
                         </div>
-                    </motion.div>
-                </div>
-            </section>
-        </>
+                    </div>
+                </section>
+
+                {/* ===================== FULL-WIDTH VISION ===================== */}
+                <section className="py-24 relative overflow-hidden">
+                    <div className="absolute inset-0 opacity-30 mix-blend-screen">
+                        <Image
+                            src={images.atmosphere.globalTrade}
+                            alt="Global shipping and trade"
+                            fill
+                            className="object-cover"
+                        />
+                    </div>
+                    {/* Dark gradient to blend the image edges */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#030914] via-[#030914]/40 to-[#030914]" />
+
+                    <div className="relative z-10 mx-auto max-w-[1320px] px-6 lg:px-20 flex justify-center">
+                        <motion.div
+                            className="glass-panel max-w-4xl p-10 md:p-16 text-center border-accent/20"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold text-white uppercase drop-shadow-lg">
+                                Connecting India <br className="hidden md:block" /> to the <span className="text-accent">World</span>
+                            </h2>
+                            <p className="mt-6 text-white/70 text-lg md:text-xl font-light mx-auto max-w-2xl leading-relaxed">
+                                Bridging the gap between global manufacturers and local supply chains with unmatched quality control, deep domain expertise, and a resilient logistics network.
+                            </p>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* ===================== WHY CHOOSE US ===================== */}
+                <section className="py-24 lg:py-32 relative">
+                    <div className="absolute top-1/2 left-0 w-96 h-96 bg-accent/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2" />
+
+                    <div className="mx-auto max-w-[1320px] px-6 lg:px-20">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+                            {/* Content Side */}
+                            <motion.div
+                                initial={{ opacity: 0, x: -30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8 }}
+                            >
+                                <h2 className="font-heading text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
+                                    The <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-white">Ajinkya</span> Advantage
+                                </h2>
+                                <p className="text-white/60 text-lg font-light mb-12">
+                                    We deliver exactly what we promise — uncompromising standards at every stage of the supply chain.
+                                </p>
+
+                                <div className="space-y-4">
+                                    {reasons.map((reason, i) => (
+                                        <motion.div
+                                            key={reason.title}
+                                            className="glass-panel p-6 group transition-all duration-300 hover:border-white/30 hover:bg-white/10"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.5, delay: i * 0.1 }}
+                                        >
+                                            <div className="flex gap-5">
+                                                <div className="shrink-0 flex h-14 w-14 items-center justify-center rounded-[var(--radius-btn)] bg-white/5 border border-white/10 group-hover:bg-accent/10 group-hover:border-accent/30 transition-colors">
+                                                    <reason.icon className="h-6 w-6 text-accent" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-heading text-xl font-bold text-white mb-2">
+                                                        {reason.title}
+                                                    </h3>
+                                                    <p className="text-sm text-white/50 leading-relaxed font-light group-hover:text-white/70 transition-colors">
+                                                        {reason.desc}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* Image Side */}
+                            <motion.div
+                                initial={{ opacity: 0, x: 30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.8 }}
+                                className="hidden lg:flex flex-col items-center justify-center w-full"
+                            >
+                                <div className="relative aspect-[3/4] w-full max-w-sm rounded-[32px] overflow-hidden glass-panel p-2 mb-12">
+                                    <div className="relative w-full h-full rounded-[24px] overflow-hidden">
+                                        <Image
+                                            src={images.about.warehouse}
+                                            alt="Our warehouse and operations"
+                                            fill
+                                            className="object-cover"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-ocean-dark)]/90 via-transparent to-transparent" />
+                                    </div>
+                                </div>
+                                {/* Floating Badges (Outside the image) */}
+                                <div className="flex items-center justify-center gap-6 z-20 w-full px-4">
+                                    <div className="glass-panel p-4 shadow-2xl animate-float hover:-translate-y-2 transition-transform duration-300 backdrop-blur-3xl bg-white/10 border-white/20">
+                                        <Globe className="h-8 w-8 text-accent mb-2" />
+                                        <p className="text-[10px] font-bold uppercase tracking-wider text-white whitespace-nowrap">20+ Countries</p>
+                                    </div>
+                                    <div className="glass-panel p-4 shadow-2xl animate-float-delayed hover:-translate-y-2 transition-transform duration-300 backdrop-blur-3xl bg-white/10 border-white/20">
+                                        <Award className="h-8 w-8 text-accent mb-2" />
+                                        <p className="text-[10px] font-bold uppercase tracking-wider text-white whitespace-nowrap">Premium Quality</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* ===================== CTA ===================== */}
+                <section className="py-24 lg:py-32">
+                    <div className="mx-auto max-w-[1320px] px-6 lg:px-20 text-center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="glass-panel p-12 md:p-20 relative overflow-hidden w-full border-accent/20 inset-0"
+                        >
+                            {/* Inner ambient glow for CTA */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2" />
+
+                            <h2 className="relative z-10 font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+                                Ready to Elevate Your Supply?
+                            </h2>
+                            <p className="relative z-10 mt-4 text-white/60 text-lg md:text-xl font-light mx-auto max-w-2xl mb-12">
+                                Contact us today for bespoke chemical solutions, bulk orders, and competitive maritime logistics.
+                            </p>
+                            <div className="relative z-10 flex flex-wrap justify-center gap-6">
+                                <Link
+                                    href="/rfq"
+                                    className="group relative inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] bg-accent/90 hover:bg-accent px-10 py-5 font-heading text-base font-bold text-navy transition-all overflow-hidden shadow-[0_0_20px_rgba(255,199,44,0.3)] hover:shadow-[0_0_40px_rgba(255,199,44,0.6)]"
+                                >
+                                    <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] group-hover:animate-[glass-shimmer_1.5s_linear]" />
+                                    Request a Quote
+                                    <ArrowRight className="h-5 w-5 relative z-10 transition-transform group-hover:translate-x-1" />
+                                </Link>
+                                <Link
+                                    href="/contact"
+                                    className="inline-flex items-center gap-2 rounded-[var(--radius-btn)] glass-panel px-10 py-5 font-heading text-base font-bold text-white transition-all hover:bg-white/10 hover:border-white/40 border-white/20"
+                                >
+                                    Contact Sales
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
     );
 }
