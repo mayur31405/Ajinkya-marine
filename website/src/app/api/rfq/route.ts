@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { saveRFQSubmission } from "@/lib/db";
 import { sendRFQNotification } from "@/lib/email";
-import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { sanitizeInput, isValidEmail, isValidPhone, FIELD_LIMITS } from "@/lib/sanitize";
 import { rateLimit } from "@/lib/rateLimit";
@@ -68,9 +67,10 @@ export async function POST(request: Request) {
             );
         }
 
-        // ── Secure File Upload Handling ──
+        // ── Secure File Upload Handling (Base64 for serverless) ──
         let fileName: string | null = null;
-        let filePath: string | null = null;
+        let fileData: string | null = null;
+        let fileType: string | null = null;
 
         if (file && file.size > 0) {
             // Enforce file size limit
@@ -98,16 +98,13 @@ export async function POST(request: Request) {
                 );
             }
 
-            const uploadsDir = path.join(process.cwd(), "uploads", "rfq");
-            await mkdir(uploadsDir, { recursive: true });
-
-            const timestamp = Date.now();
             const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-            fileName = `${timestamp}_${safeName}`;
-            filePath = path.join(uploadsDir, fileName);
+            fileName = `${Date.now()}_${safeName}`;
+            fileType = file.type;
 
+            // Convert to Base64
             const bytes = await file.arrayBuffer();
-            await writeFile(filePath, Buffer.from(bytes));
+            fileData = Buffer.from(bytes).toString("base64");
         }
 
         // Save to MongoDB
@@ -121,7 +118,8 @@ export async function POST(request: Request) {
             deliveryLocation,
             message: message || null,
             fileName,
-            filePath,
+            fileData,
+            fileType,
         });
 
         // Send email notification (non-blocking)

@@ -28,7 +28,8 @@ export interface RFQSubmissionData {
     deliveryLocation: string;
     message?: string | null;
     fileName?: string | null;
-    filePath?: string | null;
+    fileData?: string | null; // Base64 string of the file
+    fileType?: string | null; // MIME type of the file
 }
 
 // ── MongoDB Helper ──
@@ -52,6 +53,10 @@ async function readJsonFile<T>(filePath: string): Promise<T[]> {
 }
 
 async function writeJsonFile<T>(filePath: string, data: T[]) {
+    if (process.env.NODE_ENV === "production") {
+        console.warn("⚠️ Skipping local filesystem write in production. Data will be lost if MongoDB is not connected.");
+        return;
+    }
     await ensureDataDir();
     await writeFile(filePath, JSON.stringify(data, null, 2), "utf-8");
 }
@@ -68,7 +73,12 @@ const MONGO_CHECK_INTERVAL = 60 * 1000; // 1 minute
 async function isMongoAvailable(): Promise<boolean> {
     try {
         const uri = process.env.MONGODB_URI;
-        if (!uri) return false;
+        if (!uri) {
+            if (process.env.NODE_ENV === "production") {
+                console.error("❌ CRITICAL: MONGODB_URI must be provided in production.");
+            }
+            return false;
+        }
 
         const now = Date.now();
         // Return cached result if within interval
