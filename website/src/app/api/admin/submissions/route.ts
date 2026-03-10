@@ -6,7 +6,9 @@ function isAuthorized(request: NextRequest): boolean {
     const authHeader = request.headers.get("authorization");
     if (!authHeader) return false;
     const password = authHeader.replace("Bearer ", "");
-    return password === (process.env.ADMIN_PASSWORD || "ajinkya2024");
+    // Trim the environment variable to handle any trailing whitespace/newlines from CLI pushes
+    const envPassword = (process.env.ADMIN_PASSWORD || "ajinkya2024").trim();
+    return password === envPassword;
 }
 
 // GET - Fetch submissions
@@ -40,7 +42,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { id, type, status, action } = body;
+        const { id, type, status } = body;
 
         if (!id || !type) {
             return NextResponse.json({ error: "Missing id or type" }, { status: 400 });

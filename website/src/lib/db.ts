@@ -92,8 +92,9 @@ async function isMongoAvailable(): Promise<boolean> {
         cachedMongoAvailable = true;
         lastMongoCheck = now;
         return true;
-    } catch {
+    } catch (error) {
         console.warn("⚠️ MongoDB unavailable, using local JSON fallback.");
+        console.error("MongoDB Ping Error:", error instanceof Error ? error.message : error);
         cachedMongoAvailable = false;
         lastMongoCheck = Date.now();
         return false;

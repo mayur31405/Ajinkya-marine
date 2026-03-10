@@ -50,10 +50,12 @@ export async function POST(request: Request) {
             message,
         });
 
-        // Send email notification (non-blocking)
-        sendContactNotification({ name, email, phone, company, message }).catch(
-            (err) => console.error("Email notification failed:", err)
-        );
+        // Send email notification (must await in serverless)
+        try {
+            await sendContactNotification({ name, email, phone, company, message });
+        } catch (err) {
+            console.error("Email notification failed:", err);
+        }
 
         return NextResponse.json(
             { success: true, message: "Inquiry received successfully.", id },

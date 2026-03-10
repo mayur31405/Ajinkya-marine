@@ -122,18 +122,22 @@ export async function POST(request: Request) {
             fileType,
         });
 
-        // Send email notification (non-blocking)
-        sendRFQNotification({
-            companyName,
-            contactPerson,
-            email,
-            phone,
-            products: selectedProducts,
-            quantity,
-            deliveryLocation,
-            message,
-            fileName: fileName || undefined,
-        }).catch((err) => console.error("RFQ email notification failed:", err));
+        // Send email notification (must await in serverless)
+        try {
+            await sendRFQNotification({
+                companyName,
+                contactPerson,
+                email,
+                phone,
+                products: selectedProducts,
+                quantity,
+                deliveryLocation,
+                message,
+                fileName: fileName || undefined,
+            });
+        } catch (err) {
+            console.error("RFQ email notification failed:", err);
+        }
 
         return NextResponse.json(
             { success: true, message: "RFQ received successfully.", id },
