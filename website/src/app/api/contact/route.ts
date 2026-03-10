@@ -2,9 +2,20 @@ import { NextResponse } from "next/server";
 import { saveContactSubmission } from "@/lib/db";
 import { sendContactNotification } from "@/lib/email";
 import { sanitizeInput, isValidEmail, FIELD_LIMITS } from "@/lib/sanitize";
+import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(request: Request) {
     try {
+        const ip = request.headers.get("x-forwarded-for") || "unknown";
+        const rateLimitResult = rateLimit(ip, { windowMs: 60 * 1000, max: 3 });
+        
+        if (!rateLimitResult.success) {
+            return NextResponse.json(
+                { error: "Too many requests. Please try again later." },
+                { status: 429 }
+            );
+        }
+
         const body = await request.json();
 
         // Sanitize + enforce length limits

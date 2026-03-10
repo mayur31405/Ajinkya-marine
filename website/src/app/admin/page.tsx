@@ -99,6 +99,27 @@ export default function AdminDashboard() {
         setSelectedContact(null);
     };
 
+    // ── Mark all contacts as read ──
+    const handleMarkAllRead = async () => {
+        try {
+            const res = await fetch("/api/admin/submissions", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${password}`,
+                },
+                body: JSON.stringify({ type: "contact", action: "markAllRead" }),
+            });
+            if (res.ok) {
+                fetchSubmissions("contact");
+            } else {
+                alert("Failed to mark all as read.");
+            }
+        } catch (err) {
+            console.error("Mark all read error:", err);
+        }
+    };
+
     // ── Update RFQ status ──
     const handleUpdateRFQStatus = async (id: string, status: string) => {
         await fetch("/api/admin/submissions", {
@@ -110,6 +131,28 @@ export default function AdminDashboard() {
             body: JSON.stringify({ id, type: "rfq", status }),
         });
         fetchSubmissions("rfq");
+    };
+
+    // ── Clear All Submissions ──
+    const handleClearAll = async (type: Tab) => {
+        if (!confirm(`Are you sure you want to clear all ${type === "contact" ? "Contact" : "RFQ"} submissions? This action cannot be undone.`)) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/admin/submissions?type=${type}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${password}` },
+            });
+            if (res.ok) {
+                fetchSubmissions(type);
+            } else {
+                alert("Failed to clear submissions.");
+            }
+        } catch (err) {
+            console.error("Clear error:", err);
+            alert("A connection error occurred.");
+        }
     };
 
     const formatDate = (dateStr: string) => {
@@ -221,26 +264,59 @@ export default function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* Tab Switcher */}
-                <div className="flex gap-1 glass-panel p-1.5 mb-6 w-fit">
-                    <button
-                        onClick={() => setActiveTab("contact")}
-                        className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "contact"
-                            ? "bg-white/10 text-white shadow-sm border-white/20"
-                            : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
-                            }`}
-                    >
-                        📧 Contact Submissions
-                    </button>
-                    <button
-                        onClick={() => setActiveTab("rfq")}
-                        className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "rfq"
-                            ? "bg-white/10 text-white shadow-sm border-white/20"
-                            : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
-                            }`}
-                    >
-                        📋 RFQ Submissions
-                    </button>
+                {/* Tab Switcher & Actions */}
+                <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center mb-6">
+                    <div className="flex gap-1 glass-panel p-1.5 w-fit">
+                        <button
+                            onClick={() => setActiveTab("contact")}
+                            className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "contact"
+                                ? "bg-white/10 text-white shadow-sm border-white/20"
+                                : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
+                                }`}
+                        >
+                            📧 Contact Submissions
+                        </button>
+                        <button
+                            onClick={() => setActiveTab("rfq")}
+                            className={`px-5 py-2.5 rounded-[calc(var(--radius-btn)-2px)] text-sm font-medium transition-all cursor-pointer border ${activeTab === "rfq"
+                                ? "bg-white/10 text-white shadow-sm border-white/20"
+                                : "text-white/50 hover:text-white hover:bg-white/5 border-transparent"
+                                }`}
+                        >
+                            📋 RFQ Submissions
+                        </button>
+                    </div>
+
+                    <div className="flex gap-2">
+                        {/* Mark All as Read Button (Contacts only) */}
+                        {activeTab === "contact" && contacts.some(c => !c.read) && (
+                            <button
+                                onClick={handleMarkAllRead}
+                                disabled={loading}
+                                className="px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border flex items-center gap-2 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 border-blue-500/20 hover:border-blue-500/30 cursor-pointer"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Mark All Read
+                            </button>
+                        )}
+
+                        {/* Clear All Button */}
+                        <button
+                            onClick={() => handleClearAll(activeTab)}
+                            disabled={loading || (activeTab === "contact" && contacts.length === 0) || (activeTab === "rfq" && rfqs.length === 0)}
+                            className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors border flex items-center gap-2 ${(activeTab === "contact" && contacts.length === 0) || (activeTab === "rfq" && rfqs.length === 0)
+                                    ? "bg-white/5 text-white/30 border-white/5 cursor-not-allowed"
+                                    : "bg-red-500/10 text-red-400 hover:bg-red-500/20 border-red-500/20 hover:border-red-500/30 cursor-pointer"
+                                }`}
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Clear All {activeTab === "contact" ? "Contacts" : "RFQs"}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Loading */}

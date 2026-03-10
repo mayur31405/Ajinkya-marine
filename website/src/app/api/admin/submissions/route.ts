@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getContactSubmissions, getRFQSubmissions, markContactAsRead, updateRFQStatus } from "@/lib/db";
+import { getContactSubmissions, getRFQSubmissions, markContactAsRead, updateRFQStatus, clearAllContacts, clearAllRFQs } from "@/lib/db";
 
 // Simple password auth check
 function isAuthorized(request: NextRequest): boolean {
@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest) {
 
     try {
         const body = await request.json();
-        const { id, type, status } = body;
+        const { id, type, status, action } = body;
 
         if (!id || !type) {
             return NextResponse.json({ error: "Missing id or type" }, { status: 400 });
@@ -56,5 +56,30 @@ export async function PATCH(request: NextRequest) {
     } catch (error) {
         console.error("Admin PATCH error:", error);
         return NextResponse.json({ error: "Failed to update" }, { status: 500 });
+    }
+}
+
+// DELETE - Clear submissions
+export async function DELETE(request: NextRequest) {
+    if (!isAuthorized(request)) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        const { searchParams } = new URL(request.url);
+        const type = searchParams.get("type") || "contact";
+
+        if (type === "contact") {
+            await clearAllContacts();
+        } else if (type === "rfq") {
+            await clearAllRFQs();
+        } else {
+            return NextResponse.json({ error: "Invalid type" }, { status: 400 });
+        }
+
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error("Admin DELETE error:", error);
+        return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
     }
 }

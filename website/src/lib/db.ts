@@ -205,3 +205,43 @@ export async function updateRFQStatus(id: string, status: string) {
         await writeJsonFile(RFQ_FILE, entries);
     }
 }
+
+export async function clearAllContacts() {
+    if (await isMongoAvailable()) {
+        const db = await getDb();
+        await db.collection("contactSubmissions").deleteMany({});
+        return;
+    }
+    await writeJsonFile(CONTACT_FILE, []);
+}
+
+export async function clearAllRFQs() {
+    if (await isMongoAvailable()) {
+        const db = await getDb();
+        await db.collection("rfqSubmissions").deleteMany({});
+        return;
+    }
+    await writeJsonFile(RFQ_FILE, []);
+}
+
+export async function markAllContactsAsRead() {
+    if (await isMongoAvailable()) {
+        const db = await getDb();
+        await db
+            .collection("contactSubmissions")
+            .updateMany({ read: false }, { $set: { read: true } });
+        return;
+    }
+
+    const entries = await readJsonFile<Record<string, unknown>>(CONTACT_FILE);
+    let updated = false;
+    for (const entry of entries) {
+        if (entry.read === false) {
+            entry.read = true;
+            updated = true;
+        }
+    }
+    if (updated) {
+        await writeJsonFile(CONTACT_FILE, entries);
+    }
+}
