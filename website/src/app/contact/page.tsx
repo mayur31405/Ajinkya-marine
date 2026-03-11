@@ -15,6 +15,7 @@ import {
     CheckCircle2,
     ArrowRight,
     Anchor,
+    X,
 } from "lucide-react";
 
 interface ContactFormData {
@@ -28,6 +29,7 @@ interface ContactFormData {
 export default function ContactPage() {
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const {
         register,
@@ -38,6 +40,7 @@ export default function ContactPage() {
 
     const onSubmit = async (data: ContactFormData) => {
         setIsLoading(true);
+        setErrorMessage(null);
         try {
             const res = await fetch("/api/contact", {
                 method: "POST",
@@ -47,9 +50,13 @@ export default function ContactPage() {
             if (res.ok) {
                 setSubmitted(true);
                 reset();
+            } else {
+                const result = await res.json().catch(() => null);
+                setErrorMessage(result?.error || "Failed to send message. Please try again later.");
             }
         } catch (err) {
             console.error(err);
+            setErrorMessage("Network error. Please check your connection.");
         } finally {
             setIsLoading(false);
         }
@@ -249,6 +256,19 @@ export default function ContactPage() {
                                                     </p>
                                                 )}
                                             </div>
+
+                                            {errorMessage && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    className="rounded-[var(--radius-btn)] glass-panel bg-red-900/20 border-red-500/30 px-5 py-4 text-sm text-red-200 flex items-start gap-3 relative z-10 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
+                                                >
+                                                    <div className="shrink-0 flex h-5 w-5 items-center justify-center rounded-full bg-red-500/20 text-red-400">
+                                                        <X className="h-3 w-3" />
+                                                    </div>
+                                                    <span className="font-light">{errorMessage}</span>
+                                                </motion.div>
+                                            )}
 
                                             <button
                                                 type="submit"
