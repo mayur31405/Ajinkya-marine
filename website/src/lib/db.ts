@@ -113,6 +113,10 @@ export async function saveContactSubmission(data: ContactSubmissionData) {
         return result.insertedId.toString();
     }
 
+    if (process.env.NODE_ENV === "production") {
+        throw new Error("MongoDB is unavailable and local fallback is disabled in production.");
+    }
+
     // Local fallback
     const entries = await readJsonFile<Record<string, unknown>>(CONTACT_FILE);
     const id = generateId();
@@ -136,6 +140,10 @@ export async function saveRFQSubmission(data: RFQSubmissionData) {
             createdAt: new Date(),
         });
         return result.insertedId.toString();
+    }
+
+    if (process.env.NODE_ENV === "production") {
+        throw new Error("MongoDB is unavailable and local fallback is disabled in production.");
     }
 
     // Local fallback
